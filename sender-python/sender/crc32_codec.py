@@ -1,8 +1,9 @@
-import zlib
 from dataclasses import dataclass
 
 _CRC_BITS = 32
 _MINIMUM_DATA_BITS = 32
+_INITIAL_VALUE = 0xFFFFFFFF
+_POLYNOMIAL = 0xEDB88320
 
 
 @dataclass(frozen=True)
@@ -20,7 +21,15 @@ def protected_data_length(original_bit_length: int) -> int:
 
 
 def checksum(data: bytes) -> int:
-    return zlib.crc32(data) & 0xFFFFFFFF
+    crc = _INITIAL_VALUE
+    for byte in data:
+        crc ^= byte
+        for _ in range(8):
+            if crc & 1:
+                crc = (crc >> 1) ^ _POLYNOMIAL
+            else:
+                crc >>= 1
+    return (crc ^ _INITIAL_VALUE) & 0xFFFFFFFF
 
 
 def encode(data_bits: str) -> str:

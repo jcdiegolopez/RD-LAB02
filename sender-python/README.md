@@ -48,8 +48,8 @@ de la trama, incluida la redundancia.
   bit de paridad global al final. `parity_bits_for` calcula `r` dinámico
   tal que `m + r + 1 <= 2^r`.
 - CRC-32: el mensaje se rellena con ceros hasta 32 bits cuando es menor.
-  El CRC se calcula sobre el mensaje rellenado (`zlib.crc32`, compatible
-  con `java.util.zip.CRC32`) y se agregan 32 bits al final. `frameBits`
+  El CRC se calcula con una implementación propia bit a bit usando el
+  polinomio reflejado `0xEDB88320` y se agregan 32 bits al final. `frameBits`
   mide `max(originalBitLength, 32) + 32` bits.
 - El padding se retira en el receptor usando `originalBitLength`.
 

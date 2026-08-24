@@ -41,4 +41,4 @@ El emisor Python debe enviar una línea JSON por conexión y leer una línea JSO
 - En Hamming, las posiciones se numeran desde 1; los bits de paridad ocupan `1, 2, 4, 8...`, los datos se colocan en las demás posiciones y la paridad global se agrega al final.
 - En CRC-32, el mensaje se rellena con ceros hasta alcanzar 32 bits cuando sea menor. El CRC se calcula sobre el mensaje rellenado y se agrega como 32 bits binarios al final.
 - Para CRC-32, `frameBits` mide `max(originalBitLength, 32) + 32` bits.
-- Python debe usar el CRC-32 estándar compatible con `java.util.zip.CRC32` y transmitir el valor en orden binario de mayor a menor peso.
+- Java y Python usan una implementación propia bit a bit del CRC-32 estándar con el polinomio reflejado `0xEDB88320`; el valor se transmite en orden binario de mayor a menor peso.

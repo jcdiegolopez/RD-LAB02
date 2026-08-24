@@ -1,10 +1,10 @@
 package gt.edu.uvg.redes.receiver;
 
-import java.util.zip.CRC32;
-
 public final class Crc32Codec {
     private static final int CRC_BITS = 32;
     private static final int MINIMUM_DATA_BITS = 32;
+    private static final long INITIAL_VALUE = 0xFFFFFFFFL;
+    private static final long POLYNOMIAL = 0xEDB88320L;
 
     private Crc32Codec() {
     }
@@ -39,9 +39,18 @@ public final class Crc32Codec {
     }
 
     public static long checksum(byte[] bytes) {
-        CRC32 crc = new CRC32();
-        crc.update(bytes);
-        return crc.getValue();
+        long crc = INITIAL_VALUE;
+        for (byte value : bytes) {
+            crc ^= value & 0xFFL;
+            for (int bit = 0; bit < 8; bit++) {
+                if ((crc & 1L) != 0) {
+                    crc = (crc >>> 1) ^ POLYNOMIAL;
+                } else {
+                    crc >>>= 1;
+                }
+            }
+        }
+        return (crc ^ INITIAL_VALUE) & 0xFFFFFFFFL;
     }
 
     public static int protectedDataLength(int originalBitLength) {
